@@ -1,0 +1,61 @@
+
+#include <afstandssensor.h>
+#include <Wire.h>
+
+AfstandsSensor afstandssensorinicio(5, 8);
+bool estado_final;
+String ef;
+float distD;
+unsigned long tant;
+unsigned long tfin;
+unsigned long ttotal;
+
+
+void setup() {
+  Wire.setClock(100000);
+  Wire.begin(8);                // join i2c bus with address #8
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(9600);
+  // start serial for output
+}
+
+void loop() {
+  distD = afstandssensorinicio.afstandCM();
+  unsigned long t = millis();
+  //Serial.print("distIn ");
+  //Serial.println(distD);
+  //Serial.print("t ");
+  //Serial.println(t);
+
+
+  if ( distD < 85.00 && distD > 1.00) {
+    tant = t ;
+    //lcd.clear();
+  }
+
+  Serial.print("tant= ");
+  Serial.println(tant);
+
+  if (ef == "x") {
+    ef = "";
+    tfin = t;
+    ttotal = tfin - tant;
+    Serial.print("tfin= ");
+    Serial.println(tfin);
+    Serial.print("Tiempo transcurrido= ");
+    Serial.println(ttotal);
+    Serial.println("................................");
+    delay(1000);
+  }
+
+}
+
+void receiveEvent(int howMany) {
+  while (Wire.available()) {
+    ef = "";
+    char estado_final = Wire.read();
+    ef.concat(estado_final);
+    Serial.println(estado_final);
+  }
+
+}
