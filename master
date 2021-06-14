@@ -1,0 +1,30 @@
+#include <afstandssensor.h>
+#include <Wire.h>
+
+AfstandsSensor afstandssensorfinal(7, 13);
+float distancia;
+char x;
+
+void setup() {
+  Wire.setClock(100000);
+  Serial.begin(9600);
+  Wire.begin();
+
+}
+
+void loop() {
+  distancia = afstandssensorfinal.afstandCM();
+ delay(100);
+  Wire.beginTransmission(8);
+  if (distancia < 40.00 && distancia > 1.00) {
+           // sends five bytes
+    Wire.write("x"); 
+    Serial.println("x");
+    Wire.endTransmission();    // stop transmitting
+    Wire.flush();
+  }
+  Serial.print("Distancia medida: ");
+  Serial.println(distancia);
+  
+  
+}
