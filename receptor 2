@@ -1,0 +1,35 @@
+#include <afstandssensor.h>
+#include <VirtualWire.h>
+
+AfstandsSensor afstandssensorfinal(7, 13);
+float distancia;
+char x;
+const int dataPin = 9;
+
+void setup() {
+
+  Serial.begin(9600);
+  vw_setup(2000);
+  vw_set_tx_pin(dataPin);
+
+}
+
+void loop() {
+
+  const char *msg = "x";
+  distancia = afstandssensorfinal.afstandCM();
+    if (distancia < 40.00 && distancia > 1.00) {
+
+     char ef[1];
+    ef[0] = Serial.read();
+    vw_send((uint8_t *)x, strlen(x));
+    vw_wait_tx();
+    Serial.println("x");
+
+
+   }
+  Serial.print("Distancia medida: ");
+  Serial.println(distancia);
+
+
+}
